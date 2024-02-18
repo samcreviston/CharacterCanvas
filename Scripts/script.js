@@ -5,14 +5,14 @@ var createButtonGenerated = false;
 // async getClassStats Function using fetch()
 const getClassStats = async () => {
     var classFilter = document.querySelector('#class_filter').value;
-    const classResponse = await fetch("https://www.dnd5eapi.co/api/classes/" + classFilter);
+    const classResponse = await fetch(`https://www.dnd5eapi.co/api/classes/${classFilter}`);
     return await classResponse.json();
 }
 
 // async getRaceStats Function using fetch()
 const getRaceStats = async() => {
     var raceFilter = document.querySelector('#race_filter').value;
-    const raceResponse = await fetch("https://www.dnd5eapi.co/api/races/" + raceFilter);
+    const raceResponse = await fetch(`https://www.dnd5eapi.co/api/races/${raceFilter}`);
     return await raceResponse.json();
 }
 
@@ -32,28 +32,27 @@ function displayRace(raceStats) {
 
     raceStats.ability_bonuses.forEach(ability => {
         if (abilityArray == "") {
-        abilityArray += ability.ability_score.name + " +" + ability.bonus;
+            abilityArray += `${ability.ability_score.name} +${ability.bonus}`;
+        } else {
+            abilityArray += `, ${ability.ability_score.name} +${ability.bonus}`;
         }
-        else
-        abilityArray += ", " + ability.ability_score.name + " +" + ability.bonus;
     });
 
     raceStats.languages.forEach(language => {
         if (languageArray == "") {
             languageArray += language.name;
+        } else {
+            languageArray += `, ${language.name}`;
         }
-        else
-        languageArray += ", " + language.name;
     });
     
     raceStats.traits.forEach(trait => {
         if (traitsArray == "") {
             traitsArray += trait.name;
+        } else {
+            traitsArray += `, ${trait.name}`;
         }
-        else
-        traitsArray += ", " + trait.name;
     });
-
 
     const raceHtml = `
     <p>Race Name: ${raceStats.name}</p>
@@ -62,38 +61,9 @@ function displayRace(raceStats) {
     <p>Ability Stats: ${abilityArray}</p>
     <p>Language(s): ${languageArray}</p>
     <p>Traits: ${traitsArray}</p>
-
     `;
     raceOutputElement.innerHTML = raceHtml;
 }
-
-/*
-function presentOptions() {
-    const classFilter = document.getElementById('class_filter').value;
-    const raceFilter = document.getElementById('race_filter').value;
-    const otherOptionsDiv = document.getElementById('other_options');
-
-    if (classFilter !== "" && raceFilter !== "") {
-        // Clear any existing content in the div
-        otherOptionsDiv.innerHTML = '';
-
-        // Get the character class JSON data
-        const characterClass = getClassStats();
-
-       characterClass.starting_equipment_options.from.options.forEach(options => {
-            var equipmentSelect = document.createElement('select');
-
-            options.option.forEach(option => {
-                var equipmentOption = document.createElement('option');
-                equipmentSelect.textContent = option.of.name;
-                equipmentSelect.appendChild(equipmentOption);
-            })
-       });
-
-       otherOptionsDiv.appendChild(equipmentSelect);
-    }
-}
-*/
 
 function reset() {
     classOutputElement.innerHTML = '';
@@ -125,6 +95,36 @@ document.getElementById('create_button').addEventListener('click', async () => {
 //passive listeners to trigger the 'present' functions
 document.querySelector('#race_filter').addEventListener('change', () => presentCreateButton());
 document.querySelector('#class_filter').addEventListener('change', () => presentCreateButton());
+
+
+/*
+function presentOptions() {
+    const classFilter = document.getElementById('class_filter').value;
+    const raceFilter = document.getElementById('race_filter').value;
+    const otherOptionsDiv = document.getElementById('other_options');
+
+    if (classFilter !== "" && raceFilter !== "") {
+        // Clear any existing content in the div
+        otherOptionsDiv.innerHTML = '';
+
+        // Get the character class JSON data
+        const characterClass = getClassStats();
+
+       characterClass.starting_equipment_options.from.options.forEach(options => {
+            var equipmentSelect = document.createElement('select');
+
+            options.option.forEach(option => {
+                var equipmentOption = document.createElement('option');
+                equipmentSelect.textContent = option.of.name;
+                equipmentSelect.appendChild(equipmentOption);
+            })
+       });
+
+       otherOptionsDiv.appendChild(equipmentSelect);
+    }
+}
+*/
+
 
 /*
 document.querySelector('#race_filter').addEventListener('change', async () => {
